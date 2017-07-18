@@ -2,6 +2,8 @@
 
 WHMCS integration with the QuickPay payment service provider.
 
+Based on existing integration but modified to use [link](https://learn.quickpay.net/tech-talk/payments/link/) instead of form
+
 Pull requests welcome!
 
 ### Installation
