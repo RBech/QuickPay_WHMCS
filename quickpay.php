@@ -50,7 +50,7 @@ function quickpay_config()
         "quickpay_branding_id" => array("FriendlyName" => "Branding ID", "Type" => "text", "Size" => "30",),
         "quickpay_google_analytics_tracking_id" => array("FriendlyName" => "Google Analytics Tracking ID", "Type" => "text", "Size" => "30",),
         "quickpay_google_analytics_client_id" => array("FriendlyName" => "Google Analytics Client ID", "Type" => "text", "Size" => "30",),
-        "submitlabel" => array("FriendlyName" => "Submit button label", "Type" => "text", "Value" => "Pay Now", "Size" => "60",)
+        "link_text" => array("FriendlyName" => "Pay now text", "Type" => "text", "Value" => "Pay Now", "Size" => "60",)
     );
 
     return $config;
