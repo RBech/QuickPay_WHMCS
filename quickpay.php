@@ -160,7 +160,7 @@ function quickpay_create_payment_link($payment, $params)
         "cancelurl"                    => $params['returnurl'],
         "callbackurl"                  => $systemUrl . '/modules/gateways/callback/' . $moduleName . '.php',
         "customer_email"               => $params['clientdetails']['email'],
-        "payment_methods"              => $params['paymentmethods'],
+        "payment_methods"              => $params['payment_methods'],
         "language"                     => $params['language'],
         "autocapture"                  => $params['autocapture'],
         "autofee"                      => $params['autofee'],
