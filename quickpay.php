@@ -31,7 +31,7 @@ function quickpay_config()
             "Type" => "System",
             "Value" => "Quickpay"
         ),
-        "quickpay_versionnumber" => array("FriendlyName" => "Installed module version", "Type" => null, "Description" => "2.3", "Size" => "20", "disabled" => true),
+        "quickpay_versionnumber" => array("FriendlyName" => "Installed module version", "Type" => null, "Description" => "2.3.1", "Size" => "20", "disabled" => true),
         "whmcs_adminname" => array("FriendlyName" => "WHMCS administrator username", "Type" => "text", "Value" => "admin", "Size" => "20",),
         "merchant" => array("FriendlyName" => "Merchant ID", "Type" => "text", "Size" => "30",),
         "md5secret" => array("FriendlyName" => "Payment Window Api Key", "Type" => "text", "Size" => "60",),
