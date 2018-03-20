@@ -31,7 +31,7 @@ function quickpay_config()
             "Type" => "System",
             "Value" => "Quickpay"
         ),
-        "quickpay_versionnumber" => array("FriendlyName" => "Installed module version", "Type" => null, "Description" => "2.3.1", "Size" => "20", "disabled" => true),
+        "quickpay_versionnumber" => array("FriendlyName" => "Installed module version", "Type" => null, "Description" => "2.3.2", "Size" => "20", "disabled" => true),
         "whmcs_adminname" => array("FriendlyName" => "WHMCS administrator username", "Type" => "text", "Value" => "admin", "Size" => "20",),
         "merchant" => array("FriendlyName" => "Merchant ID", "Type" => "text", "Size" => "30",),
         "md5secret" => array("FriendlyName" => "Payment Window Api Key", "Type" => "text", "Size" => "60",),
@@ -69,6 +69,7 @@ function quickpay_link($params)
     $code = sprintf('<a href="%s">%s</a>', $payment, $params['link_text']);
 
     $cart = $_GET['a'];
+
     if ($cart == 'complete') {
         $invoiceId = $params['invoiceid'];
         header('Location: viewinvoice.php?id='.$invoiceId.'&qpredirect=true');
@@ -105,7 +106,11 @@ function quickpay_get_payment($params)
     }
 
     //If not create it
-    $paymentlink = quickpay_create_payment($params);
+    if ($params['payment_type'] === 'subscription') {
+        $paymentlink = quickpay_create_subscription($params);
+    } else {
+        $paymentlink = quickpay_create_payment($params);
+    }
 
     return $paymentlink;
 }
@@ -148,7 +153,7 @@ function quickpay_create_payment($params)
  * @return mixed
  * @throws Exception
  */
-function quickpay_create_payment_link($payment, $params)
+function quickpay_create_payment_link($payment, $params, $type = 'payment')
 {
     $apiKey = $params['apikey'];
     $systemUrl = $params['systemurl'];
@@ -167,10 +172,14 @@ function quickpay_create_payment_link($payment, $params)
         "branding_id"                  => $params['quickpay_branding_id'],
         "google_analytics_tracking_id" => $params['quickpay_google_analytics_tracking_id'],
         "google_analytics_client_id"   => $params['quickpay_google_analytics_client_id'],
-        "type"                         => $params['payment_type'],
     );
 
     $endpoint = sprintf('payments/%s/link', $payment->id);
+
+    if ($type === 'subscription') {
+        $endpoint = sprintf('subscriptions/%s/link', $payment->id);
+    }
+
     $paymentlink = quickpay_request($apiKey, $endpoint, $request, 'PUT');
 
     if (! isset($paymentlink->url)) {
@@ -201,6 +210,39 @@ function quickpay_create_payment_link($payment, $params)
 
     return $paymentlink;
 }
+
+/**
+ * Create QuickPay subscription
+ *
+ * @param $params
+ * @return mixed
+ * @throws Exception
+ */
+function quickpay_create_subscription($params)
+{
+    $apiKey = $params['apikey'];
+    $invoiceId = $params['invoiceid'];
+    $orderPrefix = $params['prefix'];
+    $currencyCode = $params['currency'];
+    $description = $params['description'];
+
+    $request = array(
+        'order_id' => sprintf('%s%04d', $orderPrefix, $invoiceId), //Pad to length
+        'currency' => $currencyCode,
+        'description' => $description
+    );
+
+    $payment = quickpay_request($apiKey, '/subscriptions', $request, 'POST');
+
+    if (! isset($payment->id)) {
+        throw new Exception('Failed to create subscription');
+    }
+
+    $paymentLink = quickpay_create_payment_link($payment, $params, 'subscription');
+
+    return $paymentLink;
+}
+
 
 /**
  * Signs the setup parameters.
