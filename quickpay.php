@@ -163,7 +163,7 @@ function quickpay_create_payment_link($payment, $params, $type = 'payment')
         "amount"                       => str_replace('.', '', $params['amount']),
         "continueurl"                  => $params['returnurl'],
         "cancelurl"                    => $params['returnurl'],
-        "callbackurl"                  => $systemUrl . '/modules/gateways/callback/' . $moduleName . '.php',
+        "callbackurl"                  => $systemUrl . 'modules/gateways/callback/' . $moduleName . '.php',
         "customer_email"               => $params['clientdetails']['email'],
         "payment_methods"              => $params['payment_methods'],
         "language"                     => $params['language'],
@@ -208,7 +208,7 @@ function quickpay_create_payment_link($payment, $params, $type = 'payment')
         throw new Exception('Failed to create payment link, please try again later');
     }
 
-    return $paymentlink;
+    return $paymentlink->url;
 }
 
 /**
